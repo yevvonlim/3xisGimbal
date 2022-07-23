@@ -36,6 +36,7 @@ void setup() {
 
 void loop() {
     get_ypr(ypr);
+
     if(loopcount++ > LOOP_SIZE){
         loopcount=0;
         
@@ -47,9 +48,9 @@ void loop() {
     Serial.print("yaw | "); Serial.println(ypr[0]);
     Serial.print("pitch | "); Serial.println(ypr[1]);
     Serial.print("roll | "); Serial.println(ypr[2]); 
-    // roll control
+
+    // roll control 
     int pwm = computePID(ypr[2], setPoint[2]);
     Serial.print("pwm | "); Serial.println(pwm); Serial.println("");
     run_roll_motor_complex(pwm);
-    delay(20);
 }

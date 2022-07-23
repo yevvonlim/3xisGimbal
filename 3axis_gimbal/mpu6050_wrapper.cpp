@@ -38,7 +38,7 @@ void init_mpu(){
     Serial.begin(baud_rate);
     while (!Serial); // wait for Leonardo enumeration, others continue immediately
     // initialize device
-    // Serial.println(F("Initializing I2C devices..."));
+    Serial.println(F("Initializing I2C devices..."));
     mpu.initialize();
     pinMode(INTERRUPT_PIN, INPUT);
     
@@ -99,6 +99,7 @@ void get_ypr(float* ypr){
     while (!mpuInterrupt && fifoCount < packetSize) {
         // other program behavior stuff here
         if (st_time-micros() > MPU_TIMEOUT){
+            Serial.println("I died! =============================");
             init_mpu();
             break;
         }
