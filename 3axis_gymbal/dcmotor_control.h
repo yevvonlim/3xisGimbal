@@ -25,13 +25,13 @@
 
 #define MAX_PWM 200
 
-void pitch_motor_attach();
-void run_pitch_motor_dt(int pwm);
-void run_pitch_motor_delay(int pwm);
-void run_pitch_motor_complex(int pwm);
+void roll_motor_attach();
+void run_roll_motor_dt(int pwm);
+void run_roll_motor_delay(int pwm);
+void run_roll_motor_complex(int pwm);
 
 
-void run_pitch_motor(int pwm);
+void run_roll_motor(int pwm);
 int computePID(volatile double inp, int i);
 double SDYfunc(double out);
 

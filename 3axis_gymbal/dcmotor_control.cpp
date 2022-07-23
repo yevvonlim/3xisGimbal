@@ -4,6 +4,7 @@
 //@date: 2022-06-23
 
 #include "dcmotor_control.h"
+#include <Arduino.h>
 
 double setPoint[3]={0,0,0};
 
