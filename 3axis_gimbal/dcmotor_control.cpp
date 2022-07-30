@@ -4,7 +4,7 @@
 //@date: 2022-06-23
 
 #include "dcmotor_control.h"
-#include <Arduino.h>
+// #include <Arduino.h>
 
 double setPoint[3]={0,0,0};
 
@@ -18,27 +18,32 @@ double cumError[3]={0,0,0}, rateError[3]={0,0,0};
 double degree=30;
 int motor_spd[3]={0,0,0};
 
-
 void roll_motor_attach(){
     pinMode(ROLL_1, OUTPUT);
     pinMode(ROLL_2, OUTPUT);
     pinMode(ROLL_PWM, OUTPUT);
 }
-void run_roll_motor(int pwm){
-    if (pwm >= 0){
-        digitalWrite(ROLL_1, HIGH);
-        digitalWrite(ROLL_2, LOW);
-        analogWrite(ROLL_PWM, pwm); 
-    }
-    else if (pwm < 0){
-        digitalWrite(ROLL_1, LOW);
-        digitalWrite(ROLL_2, HIGH);
-        analogWrite(ROLL_PWM, -pwm); 
-    }
+// void run_roll_motor(int pwm){
+//     if (pwm >= 0){
+//         digitalWrite(ROLL_1, HIGH);
+//         digitalWrite(ROLL_2, LOW);
+//         analogWrite(ROLL_PWM, pwm); 
+//     }
+//     else if (pwm < 0){
+//         digitalWrite(ROLL_1, LOW);
+//         digitalWrite(ROLL_2, HIGH);
+//         analogWrite(ROLL_PWM, -pwm); 
+//     }
+//     return;
+// }
+
+void DELAY(uint16_t milsec){
+    uint16_t st_time = millis();
+    while(abs(millis()-st_time) < milsec) ;
     return;
 }
 
-void run_roll_motor_dt(int pwm){
+void run_roll_motor(int pwm){
     // pwm: -255 ~ 255
     // if pwm < 0, run ROLL motor cw
     // if pwm > 0, run ROLL motor ccw
@@ -46,15 +51,26 @@ void run_roll_motor_dt(int pwm){
         digitalWrite(ROLL_1, HIGH);
         digitalWrite(ROLL_2, LOW);
         analogWrite(ROLL_PWM, pwm); 
-        delay(RUN_MOTOR_DT_DELAY);
+        uint16_t run_motor_delay = 500/pwm;
+        Serial.print("DELAY: "); Serial.println(run_motor_delay);
+        uint16_t st_time = millis();
+        
+        DELAY(run_motor_delay);
         analogWrite(ROLL_PWM, 0); 
     }
     else if (pwm < 0){
         digitalWrite(ROLL_1, LOW);
         digitalWrite(ROLL_2, HIGH);
         analogWrite(ROLL_PWM, -pwm); 
-        delay(RUN_MOTOR_DT_DELAY);
+        uint16_t run_motor_delay = 500/(-pwm);
+        Serial.print("DELAY: "); Serial.println(run_motor_delay);
+        DELAY(run_motor_delay);
         analogWrite(ROLL_PWM, 0); 
+    }
+    else if (pwm == 0){
+        digitalWrite(ROLL_1, LOW);
+        digitalWrite(ROLL_2, HIGH);
+        analogWrite(ROLL_PWM, pwm); 
     }
     return ;
 }
@@ -77,6 +93,27 @@ void run_roll_motor_delay(int pwm){
         digitalWrite(ROLL_2, HIGH);
         analogWrite(ROLL_PWM, RUN_MOTOR_DELAY_PWM); 
         delay(delay_milsec);
+        analogWrite(ROLL_PWM, 0); 
+    }
+    return ;
+}
+
+void run_roll_motor_dt(int pwm){
+    // pwm: -255 ~ 255
+    // if pwm < 0, run ROLL motor cw
+    // if pwm > 0, run ROLL motor ccw
+    if (pwm > 0){
+        digitalWrite(ROLL_1, HIGH);
+        digitalWrite(ROLL_2, LOW);
+        analogWrite(ROLL_PWM, pwm); 
+        delay(RUN_MOTOR_DT_DELAY);
+        analogWrite(ROLL_PWM, 0); 
+    }
+    else if (pwm < 0){
+        digitalWrite(ROLL_1, LOW);
+        digitalWrite(ROLL_2, HIGH);
+        analogWrite(ROLL_PWM, -pwm); 
+        delay(RUN_MOTOR_DT_DELAY);
         analogWrite(ROLL_PWM, 0); 
     }
     return ;

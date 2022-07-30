@@ -27,18 +27,19 @@
 #define RUN_MOTOR_DELAY_PWM 55
 
 // pid constant
-#define kp 10
+#define kp 5
 #define ki 0
 #define kd 0
 
 #define MAX_PWM 200
+#include <Arduino.h>
 
 void roll_motor_attach();
 void run_roll_motor_dt(int pwm);
-// void run_roll_motor_delay(int pwm);
+void run_roll_motor_delay(int pwm);
 // void run_roll_motor_complex(int pwm);
 
-
+void DELAY(uint16_t milsec);
 void run_roll_motor(int pwm);
 int computePID(volatile double inp, int i);
 double SDYfunc(double out);

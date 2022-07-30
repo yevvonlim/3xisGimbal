@@ -50,7 +50,7 @@ void loop() {
     // pitch control
     int pwm = computePID(ypr[2], setPoint[2]);
     Serial.print("pwm | "); Serial.println(pwm); Serial.println("");
-    run_roll_motor_dt(pwm);
+    run_roll_motor(pwm);
     delay(10);
     mpu.resetFIFO();
     Serial.print(devStatus); Serial.println("\n");
