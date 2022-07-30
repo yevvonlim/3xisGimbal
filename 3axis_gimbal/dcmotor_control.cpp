@@ -25,7 +25,7 @@ void roll_motor_attach(){
     pinMode(ROLL_PWM, OUTPUT);
 }
 void run_roll_motor(int pwm){
-    if (pwm > 0){
+    if (pwm >= 0){
         digitalWrite(ROLL_1, HIGH);
         digitalWrite(ROLL_2, LOW);
         analogWrite(ROLL_PWM, pwm); 
@@ -101,7 +101,7 @@ void run_roll_motor_complex(int pwm){
     }
     return;
 }
-
+// qnpr
 int computePID(volatile double inp, int i)
 {     
         inp = inp > 30? 30 : inp;
