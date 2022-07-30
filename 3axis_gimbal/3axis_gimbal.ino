@@ -14,6 +14,7 @@ extern double setPoint[3];
 extern double cumError[3];
 extern double rateError[3];
 extern volatile bool mpuInterrupt;
+extern MPU6050 mpu;
 int loopcount = 0;
 
 void setup() {
@@ -53,4 +54,5 @@ void loop() {
     int pwm = computePID(ypr[2], setPoint[2]);
     Serial.print("pwm | "); Serial.println(pwm); Serial.println("");
     run_roll_motor_complex(pwm);
+    mpu.dmpInitialize(9);
 }

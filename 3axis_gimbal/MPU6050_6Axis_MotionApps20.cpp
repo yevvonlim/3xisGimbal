@@ -269,7 +269,7 @@ static const unsigned char dmpMemory[MPU6050_DMP_CODE_SIZE] PROGMEM = {
 #endif
 
 // I Simplified this:
-uint8_t MPU6050_6Axis_MotionApps20::dmpInitialize() {
+uint8_t MPU6050_6Axis_MotionApps20::dmpInitialize(uint8_t rate=4) {
 	// reset device
 	DEBUG_PRINTLN(F("\n\nResetting MPU6050..."));
 	reset();
@@ -315,7 +315,7 @@ uint8_t MPU6050_6Axis_MotionApps20::dmpInitialize() {
 	setIntEnabled(1<<MPU6050_INTERRUPT_FIFO_OFLOW_BIT|1<<MPU6050_INTERRUPT_DMP_INT_BIT);
 
 	DEBUG_PRINTLN(F("Setting sample rate to 200Hz..."));
-	setRate(4); // 1khz / (1 + 4) = 200 Hz
+	setRate(rate); // 1khz / (1 + 4) = 200 Hz
 
 	DEBUG_PRINTLN(F("Setting external frame sync to TEMP_OUT_L[0]..."));
 	setExternalFrameSync(MPU6050_EXT_SYNC_TEMP_OUT_L);

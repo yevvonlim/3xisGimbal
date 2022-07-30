@@ -47,7 +47,7 @@ void init_mpu(){
     Serial.println(mpu.testConnection() ? F("MPU6050 connection successful") : F("MPU6050 connection failed"));
     // load and configure the DMP
     Serial.println(F("Initializing DMP..."));
-    devStatus = mpu.dmpInitialize();
+    devStatus = mpu.dmpInitialize(9);
 
     // supply your own gyro offsets here, scaled for min sensitivity
     mpu.setXAccelOffset(X_ACC_OFFSET);

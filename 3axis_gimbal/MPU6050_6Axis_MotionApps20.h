@@ -47,7 +47,7 @@ class MPU6050_6Axis_MotionApps20 : public MPU6050_Base {
     public:
         MPU6050_6Axis_MotionApps20(uint8_t address=MPU6050_DEFAULT_ADDRESS, void *wireObj=0) : MPU6050_Base(address, wireObj) { }
 
-        uint8_t dmpInitialize();
+        uint8_t dmpInitialize(uint8_t rate);
         bool dmpPacketAvailable();
 
         uint8_t dmpSetFIFORate(uint8_t fifoRate);
