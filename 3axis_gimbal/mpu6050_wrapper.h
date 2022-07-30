@@ -73,7 +73,7 @@ THE SOFTWARE.
 #define Z_GYRO_OFFSET -28
 
 #define baud_rate 19200
-
+#define MPU_TIMEOUT 2500
 // ================================================================
 // ===               INTERRUPT DETECTION ROUTINE                ===
 // ================================================================

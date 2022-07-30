@@ -46,14 +46,14 @@ void run_roll_motor_dt(int pwm){
         digitalWrite(ROLL_1, HIGH);
         digitalWrite(ROLL_2, LOW);
         analogWrite(ROLL_PWM, pwm); 
-        delay(5);
+        delay(RUN_MOTOR_DT_DELAY);
         analogWrite(ROLL_PWM, 0); 
     }
     else if (pwm < 0){
         digitalWrite(ROLL_1, LOW);
         digitalWrite(ROLL_2, HIGH);
         analogWrite(ROLL_PWM, -pwm); 
-        delay(5);
+        delay(RUN_MOTOR_DT_DELAY);
         analogWrite(ROLL_PWM, 0); 
     }
     return ;
@@ -64,18 +64,18 @@ void run_roll_motor_delay(int pwm){
     // if pwm < 0, run ROLL motor cw
     // if pwm > 0, run ROLL motor ccw
     if (pwm > 0){
-        uint16_t delay_milsec = pwm*1.5;
+        uint16_t delay_milsec = pwm;
         digitalWrite(ROLL_1, HIGH);
         digitalWrite(ROLL_2, LOW);
-        analogWrite(ROLL_PWM, 55); 
+        analogWrite(ROLL_PWM, RUN_MOTOR_DELAY_PWM); 
         delay(delay_milsec);
         analogWrite(ROLL_PWM, 0); 
     }
     else if (pwm < 0){
-        uint16_t delay_milsec = -pwm*1.5;
+        uint16_t delay_milsec = -pwm;
         digitalWrite(ROLL_1, LOW);
         digitalWrite(ROLL_2, HIGH);
-        analogWrite(ROLL_PWM, 55); 
+        analogWrite(ROLL_PWM, RUN_MOTOR_DELAY_PWM); 
         delay(delay_milsec);
         analogWrite(ROLL_PWM, 0); 
     }
@@ -84,7 +84,7 @@ void run_roll_motor_delay(int pwm){
 
 void run_roll_motor_complex(int pwm){
     if (pwm > 0) {
-        if (pwm < 45){
+        if (pwm < PWM_THR){
             run_roll_motor_delay(pwm);
         }
         else{
@@ -92,7 +92,7 @@ void run_roll_motor_complex(int pwm){
         }
     }
     else if (pwm < 0) {
-        if(pwm > -45){
+        if(pwm > -PWM_THR){
             run_roll_motor_delay(pwm);
         } 
         else{
@@ -104,6 +104,7 @@ void run_roll_motor_complex(int pwm){
 
 int computePID(volatile double inp, int i)
 {     
+        inp = inp > 30? 30 : inp;
         currentTime[i] = millis();                //get current time
         elapsedTime = (double)(currentTime[i] - previousTime[i]);        //compute time elapsed from previous computation
         
@@ -112,7 +113,7 @@ int computePID(volatile double inp, int i)
         rateError[i] = (error[i] - lastError[i])/elapsedTime;   // compute derivative
 
         double out = kp*error[i] + ki*cumError[i] + kd * rateError[i];                //PID output               
-        Serial.print("out | "); Serial.println(out); Serial.println("");
+        // Serial.print("out | "); Serial.println(out); Serial.println("");
         motor_spd[i]=(int)SDYfunc(out);
         
         lastError[i] = error[i];                                //remember current error
@@ -123,7 +124,7 @@ int computePID(volatile double inp, int i)
 //출처: https://throwexception.tistory.com/851 [집밖은 위험해:티스토리]
 
 double SDYfunc(double out){
-    double thr = 180*kp + 80*kd + 450*ki;
+    double thr = P_THR*kp + D_THR*kd + I_THR*ki;
     double spd=0;
     
     if (out < thr && out >= 0){

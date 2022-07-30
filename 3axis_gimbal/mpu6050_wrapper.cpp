@@ -95,8 +95,14 @@ void dmpDataReady() {mpuInterrupt = true;}
 void get_ypr(float* ypr){
     // if programming failed, don't try to do anything
     if (!dmpReady)  return;
+    unsigned long st_time = micros();
     while (!mpuInterrupt && fifoCount < packetSize) {
         // other program behavior stuff here
+        if (st_time-micros() > MPU_TIMEOUT){
+            Serial.println("I died! =============================");
+            init_mpu();
+            break;
+        }
     }
     mpuInterrupt = false;
     mpuIntStatus = mpu.getIntStatus();

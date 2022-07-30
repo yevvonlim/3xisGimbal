@@ -14,8 +14,9 @@ extern double setPoint[3];
 extern double cumError[3];
 extern double rateError[3];
 extern volatile bool mpuInterrupt;
+extern uint8_t devStatus;
 int loopcount = 0;
-
+extern MPU6050 mpu;
 void setup() {
     // baud rate = 115200
     init_mpu();
@@ -38,7 +39,6 @@ void loop() {
     get_ypr(ypr);
     if(loopcount++ > LOOP_SIZE){
         loopcount=0;
-        
         for(int i=0; i < 3; i++){
             cumError[i]=0;
         }
@@ -48,8 +48,10 @@ void loop() {
     Serial.print("pitch | "); Serial.println(ypr[1]);
     Serial.print("roll | "); Serial.println(ypr[2]); 
     // pitch control
-    // int pwm = computePID(ypr[2], setPoint[2]);
-    // Serial.print("pwm | "); Serial.println(pwm); Serial.println("");
-    // run_roll_motor_complex(pwm);
+    int pwm = computePID(ypr[2], setPoint[2]);
+    Serial.print("pwm | "); Serial.println(pwm); Serial.println("");
+    run_roll_motor_complex(pwm);
     delay(10);
+    mpu.resetFIFO();
+    Serial.print(devStatus); Serial.println("\n");
 }
