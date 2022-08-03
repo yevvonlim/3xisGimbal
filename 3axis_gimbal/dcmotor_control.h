@@ -18,12 +18,12 @@
 #define YAW_2 11
 #define YAW_PWM 6
 
-#define P_THR 40
+#define P_THR 180
 #define I_THR 300
 #define D_THR 3
 
 #define PWM_THR 45
-#define RUN_MOTOR_DT_DELAY 5
+#define RUN_MOTOR_DELAY 2000
 #define RUN_MOTOR_DELAY_PWM 55
 
 // pid constant
