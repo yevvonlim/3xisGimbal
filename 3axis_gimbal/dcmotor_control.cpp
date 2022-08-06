@@ -4,10 +4,11 @@
 //@date: 2022-06-23
 
 #include "dcmotor_control.h"
+#include "mpu6050_wrapper.h"
 // #include <Arduino.h>
 
 double setPoint[3]={0,0,0};
-
+extern MPU6050 mpu;
 unsigned long currentTime[3]={0,0,0}, previousTime[3]={0,0,0};
 double elapsedTime;
 
@@ -51,21 +52,21 @@ void run_roll_motor(int pwm){
         digitalWrite(ROLL_1, HIGH);
         digitalWrite(ROLL_2, LOW);
         analogWrite(ROLL_PWM, pwm); 
-        uint16_t run_motor_delay = RUN_MOTOR_DELAY/pwm;
-        Serial.print("DELAY: "); Serial.println(run_motor_delay);
-        uint16_t st_time = millis();
+        // uint16_t run_motor_delay = RUN_MOTOR_DELAY/pwm;
+        // Serial.print("DELAY: "); Serial.println(run_motor_delay);
+        // uint16_t st_time = millis();
         
-        DELAY(run_motor_delay);
-        analogWrite(ROLL_PWM, 0); 
+        // DELAY(run_motor_delay);
+        // analogWrite(ROLL_PWM, 0); 
     }
     else if (pwm < 0){
         digitalWrite(ROLL_1, LOW);
         digitalWrite(ROLL_2, HIGH);
         analogWrite(ROLL_PWM, -pwm); 
-        uint16_t run_motor_delay = RUN_MOTOR_DELAY/(-pwm);
-        Serial.print("DELAY: "); Serial.println(run_motor_delay);
-        DELAY(run_motor_delay);
-        analogWrite(ROLL_PWM, 0); 
+        // uint16_t run_motor_delay = RUN_MOTOR_DELAY/(-pwm);
+        // Serial.print("DELAY: "); Serial.println(run_motor_delay);
+        // DELAY(run_motor_delay);
+        // analogWrite(ROLL_PWM, 0); 
     }
     else if (pwm == 0){
         digitalWrite(ROLL_1, LOW);
@@ -98,6 +99,7 @@ void run_roll_motor_delay(int pwm){
     return ;
 }
 
+
 // void run_roll_motor_dt(int pwm){
 //     // pwm: -255 ~ 255
 //     // if pwm < 0, run ROLL motor cw
@@ -118,6 +120,56 @@ void run_roll_motor_delay(int pwm){
 //     }
 //     return ;
 // }
+
+void get_min_delay(MOTOR_CLASS motor_type, double (*pwm_delay)[3]){
+    /*
+    Params]
+        MOTOR_CLASS motor_type: motor type (YAW=0, PITCH=1, ROLL=2)
+        double* pwm_delay: pwm_delay -> 이차배열 포인터. (pwm, delay) 순서쌍을 저장함.
+    */
+    float ypr[3] = {0,};
+    int index = 0;
+    for(int pwm=30; pwm <= 200; pwm+=10){
+        for(int _delay=20; _delay <= 100; _delay+=10){
+            get_ypr(ypr);
+            mpu.resetFIFO();
+            mpu.getIntStatus();
+            double init_sensor_value = ypr[motor_type];
+
+            run_roll_motor(pwm);
+            delay(_delay);
+            run_roll_motor(0);
+            delay(500);
+            mpu.resetFIFO();
+            mpu.getIntStatus();
+            
+            get_ypr(ypr);
+            mpu.resetFIFO();
+            mpu.getIntStatus();
+
+            double new_sensor_value = ypr[motor_type];
+            run_roll_motor(-pwm);
+            delay(_delay);
+            run_roll_motor(0);
+            /*
+            if(abs(init_sensor_value-new_sensor_value) >= 5){
+                pwm_delay[index][0] = pwm;
+                pwm_delay[index][1] = _delay;
+                pwm_delay[index][2] = abs(init_sensor_value-new_sensor_value);
+                Serial.print("pwm: "); Serial.print(pwm); Serial.print(", ");Serial.print("delay: ");Serial.print(_delay);
+                Serial.print("| DT_ANGLE:"); Serial.println(abs(init_sensor_value-new_sensor_value));
+                break;
+            }*/
+            Serial.print("pwm: "); Serial.print(pwm); Serial.print(", ");Serial.print("delay: ");Serial.print(_delay);
+            Serial.print("| DT_ANGLE:"); Serial.println(abs(init_sensor_value-new_sensor_value));
+            delay(500);
+            Serial.println("------------------------------------------------");
+            mpu.resetFIFO();
+            mpu.getIntStatus();
+        }
+        index++;
+    }
+}
 
 void run_roll_motor_complex(int pwm){
     if (pwm > 0) {

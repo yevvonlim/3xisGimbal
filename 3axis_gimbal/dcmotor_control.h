@@ -31,9 +31,10 @@
 #define ki 0
 #define kd 0
 
-#define MAX_PWM 200
+#define MAX_PWM 150
 #include <Arduino.h>
 
+enum MOTOR_CLASS {YAW=0, PITCH, ROLL};
 void roll_motor_attach();
 void run_roll_motor_dt(int pwm);
 void run_roll_motor_delay(int pwm);
@@ -43,6 +44,7 @@ void DELAY(uint16_t milsec);
 void run_roll_motor(int pwm);
 int computePID(volatile double inp, int i);
 double SDYfunc(double out);
+void get_min_delay(MOTOR_CLASS motor_type, double (*pwm_delay)[3]);
 
 #endif
 // or

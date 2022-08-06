@@ -13,7 +13,7 @@ uint8_t mpuIntStatus;   // holds actual interrupt status byte from MPU
 uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
 uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
 uint16_t fifoCount;     // count of all bytes currently in FIFO
-uint8_t fifoBuffer[64]; // FIFO storage buffer
+uint8_t fifoBuffer[140]; // FIFO storage buffer (원래 64)
 
 // orientation/motion vars
 Quaternion q;           // [w, x, y, z]         quaternion container
@@ -28,7 +28,7 @@ MPU6050 mpu;
 void init_mpu(){
     #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
         Wire.begin();
-        Wire.setClock(400000); // 400kHz I2C clock. Comment this line if having compilation difficulties
+        Wire.setClock(200000); // 400kHz I2C clock. Comment this line if having compilation difficulties
         //  Following line will prevent mpu6050 stopping
         // Wire.setWireTimeout(2500 /* us */, true /* reset_on_timeout */);
     #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
@@ -73,9 +73,10 @@ void init_mpu(){
         // // set our DMP Ready flag so the main loop() function knows it's okay to use it
         Serial.println(F("DMP ready! Waiting for first interrupt..."));
         dmpReady = true;
-
+        Serial.println(F("First int ready!"));
         // get expected DMP packet size for later comparison
         packetSize = mpu.dmpGetFIFOPacketSize();
+        Serial.print("Packet size: "); Serial.println(packetSize);
     } else {
         // ERROR!
         // 1 = initial memory load failed
