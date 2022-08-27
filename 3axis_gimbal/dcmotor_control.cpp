@@ -49,8 +49,8 @@ void run_roll_motor(int pwm){
     // if pwm < 0, run ROLL motor cw
     // if pwm > 0, run ROLL motor ccw
     if (pwm > 0){
-        digitalWrite(ROLL_1, HIGH);
-        digitalWrite(ROLL_2, LOW);
+        digitalWrite(ROLL_1, LOW);
+        digitalWrite(ROLL_2, HIGH);
         analogWrite(ROLL_PWM, pwm); 
         // uint16_t run_motor_delay = RUN_MOTOR_DELAY/pwm;
         // Serial.print("DELAY: "); Serial.println(run_motor_delay);
@@ -60,8 +60,8 @@ void run_roll_motor(int pwm){
         // analogWrite(ROLL_PWM, 0); 
     }
     else if (pwm < 0){
-        digitalWrite(ROLL_1, LOW);
-        digitalWrite(ROLL_2, HIGH);
+        digitalWrite(ROLL_1, HIGH);
+        digitalWrite(ROLL_2, LOW);
         analogWrite(ROLL_PWM, -pwm); 
         // uint16_t run_motor_delay = RUN_MOTOR_DELAY/(-pwm);
         // Serial.print("DELAY: "); Serial.println(run_motor_delay);
@@ -82,16 +82,16 @@ void run_roll_motor_delay(int pwm){
     // if pwm > 0, run ROLL motor ccw
     if (pwm > 0){
         uint16_t delay_milsec = pwm;
-        digitalWrite(ROLL_1, HIGH);
-        digitalWrite(ROLL_2, LOW);
+        digitalWrite(ROLL_1, LOW);
+        digitalWrite(ROLL_2, HIGH);
         analogWrite(ROLL_PWM, RUN_MOTOR_DELAY_PWM); 
         delay(delay_milsec);
         analogWrite(ROLL_PWM, 0); 
     }
     else if (pwm < 0){
         uint16_t delay_milsec = -pwm;
-        digitalWrite(ROLL_1, LOW);
-        digitalWrite(ROLL_2, HIGH);
+        digitalWrite(ROLL_1, HIGH);
+        digitalWrite(ROLL_2, LOW);
         analogWrite(ROLL_PWM, RUN_MOTOR_DELAY_PWM); 
         delay(delay_milsec);
         analogWrite(ROLL_PWM, 0); 
@@ -214,15 +214,16 @@ int computePID(volatile double inp, int i)
 
 double SDYfunc(double out){
     double thr = P_THR*kp + D_THR*kd + I_THR*ki;
+    double Min = MIN_PWM-(MAX_PWM-MIN_PWM)/thr*5*kp;
     double spd=0;
     
     if (out < thr && out >= 0){
         // spd = MAX_PWM / thr * out;
-        spd = (MAX_PWM / pow(thr, 3)) * pow(out-thr, 3) + MAX_PWM;
+        spd =  (MAX_PWM-Min)/thr*out+Min;
     }
     else if (out >= -thr && out < 0){
         // spd = MAX_PWM / thr * out;
-        spd = (MAX_PWM / pow(thr, 3)) * pow(out+thr, 3) - MAX_PWM;
+        spd = (MAX_PWM-Min)/thr*out-Min;
     }
     
     else if (out < -thr){

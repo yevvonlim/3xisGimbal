@@ -31,7 +31,8 @@
 #define ki 0
 #define kd 0
 
-#define MAX_PWM 250
+#define MAX_PWM 200
+#define MIN_PWM 60
 #include <Arduino.h>
 
 enum MOTOR_CLASS {YAW=0, PITCH, ROLL};
