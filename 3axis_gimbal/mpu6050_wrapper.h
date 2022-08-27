@@ -64,13 +64,13 @@ THE SOFTWARE.
 #define INTERRUPT_PIN 2  // use pin 2 on Arduino Uno & most boards
 #define LED_PIN 13       // (Arduino is 13, Teensy is 11, Teensy++ is 6)
 
-#define X_ACC_OFFSET -5040
-#define Y_ACC_OFFSET -790
-#define Z_ACC_OFFSET 6263
+#define X_ACC_OFFSET -954
+#define Y_ACC_OFFSET -827
+#define Z_ACC_OFFSET 4156
 
-#define X_GYRO_OFFSET -37
-#define Y_GYRO_OFFSET -4
-#define Z_GYRO_OFFSET -28
+#define X_GYRO_OFFSET 101
+#define Y_GYRO_OFFSET -72
+#define Z_GYRO_OFFSET -1
 
 #define baud_rate 19200//19200
 #define MPU_TIMEOUT 2500
